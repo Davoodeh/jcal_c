@@ -1,4 +1,4 @@
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I config/m4
 SUBDIRS         = libjalali src man test_kit
 
 if WANT_PYJALALI

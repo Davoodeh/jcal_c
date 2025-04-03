@@ -2,9 +2,11 @@
 
 AC_INIT([jcal],[0.5.1],[https://github.com/persiancal/jcal])
 
+AC_CONFIG_AUX_DIR([config])
+AC_CONFIG_MACRO_DIRS([config/m4])
+
 AM_INIT_AUTOMAKE
 LT_INIT
-AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
 AC_PROG_CC
