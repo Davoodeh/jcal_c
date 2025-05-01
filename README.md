@@ -22,6 +22,12 @@ directly:
 # cd jcal
 # python setup.py install
 
+TODOs
+=====
+
+* Adding support for locale-aware outputs to jcal and jdate.
+* Hindi digits, month and weekday names.
+
 ---
 
 This library was written and maintained by Ashkan Ghasemi, he passed away in an [accident](https://jadi.net/2017/10/ashkan-ghasemi/).
