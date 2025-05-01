@@ -65,27 +65,27 @@ struct jyinfo {
 };
 
 /* Jalali leap year indication function. */
-extern int jalali_is_jleap(int year);
+int jalali_is_jleap(int year);
 
-extern void jalali_create_time_from_secs(time_t time, struct ab_jtm *ab_jtm);
+void jalali_create_time_from_secs(time_t time, struct ab_jtm *ab_jtm);
 
-extern time_t jalali_create_secs_from_time(const struct ab_jtm *ab_jtm);
+time_t jalali_create_secs_from_time(const struct ab_jtm *ab_jtm);
 
-extern int jalali_create_date_from_days(struct jtm *j);
+int jalali_create_date_from_days(struct jtm *j);
 
-extern int jalali_create_days_from_date(struct jtm *j);
+int jalali_create_days_from_date(struct jtm *j);
 
-extern void jalali_get_jyear_info(struct jyinfo *jyinfo);
+void jalali_get_jyear_info(struct jyinfo *jyinfo);
 
-extern void jalali_get_date(int p, struct jtm *jtm);
+void jalali_get_date(int p, struct jtm *jtm);
 
-extern int jalali_get_diff(const struct jtm *jtm);
+int jalali_get_diff(const struct jtm *jtm);
 
-extern void jalali_update(struct jtm *jtm);
+void jalali_update(struct jtm *jtm);
 
-extern void jalali_show_time(const struct jtm *j);
+void jalali_show_time(const struct jtm *j);
 
-extern int jalali_year_month_days(int year, int month);
+int jalali_year_month_days(int year, int month);
 
 #ifdef __cplusplus
 }
