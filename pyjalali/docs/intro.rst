@@ -7,8 +7,8 @@ methods' documentation see :ref:`modindex`.
 Install
 -------
 
-In jcal source directory navigate to subdirectory *sources* and run ``python
-setup.py install``.  You must have libjalali installed before.
+In jcal source directory navigate run ``python setup.py install``.  You must
+have libjalali installed before.
 
 Usage
 -----

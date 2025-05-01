@@ -10,6 +10,17 @@ libc implementations. Jalali calendar provides an API similar to that of libc's 
 Jalali calendar package consists of a library namely libjalali and two simple and easy to use terminal tools, jcal
 and jdate with functionality similar to UNIX cal and date.
 
+Installation
+============
+Run `./autogen.sh` to make `configure` script for you.  Then follow common
+package installation routine as described in `INSTALL`.
+
+If you want pyjalali package too, you can either pass `--enable-pyjalali` option
+to `./configure` script or after installing libjalali use provided `setup.py`
+directly:
+
+# cd jcal
+# python setup.py install
 
 ---
 
