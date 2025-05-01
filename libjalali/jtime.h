@@ -31,30 +31,30 @@ extern "C" {
 
 #define MAX_BUF_SIZE 2048
 
-extern char *jasctime(const struct jtm *jtm);
+char *jasctime(const struct jtm *jtm);
 
-extern char *jctime(const time_t *timep);
+char *jctime(const time_t *timep);
 
-extern struct jtm *jgmtime(const time_t *timep);
+struct jtm *jgmtime(const time_t *timep);
 
-extern struct jtm *jlocaltime(const time_t *timep);
+struct jtm *jlocaltime(const time_t *timep);
 
-extern time_t jmktime(struct jtm *jtm);
+time_t jmktime(struct jtm *jtm);
 
-extern size_t jstrftime(char *s, size_t max, const char *format,
-                        const struct jtm *jtm);
+size_t jstrftime(char *s, size_t max, const char *format,
+                 const struct jtm *jtm);
 
-extern char *jstrptime(const char *s, const char *format, struct jtm *jtm);
+char *jstrptime(const char *s, const char *format, struct jtm *jtm);
 
-extern char *jasctime_r(const struct jtm *jtm, char *buf);
+char *jasctime_r(const struct jtm *jtm, char *buf);
 
-extern char *jctime_r(const time_t *timep, char *buf);
+char *jctime_r(const time_t *timep, char *buf);
 
-extern struct jtm *jgmtime_r(const time_t *timep, struct jtm *result);
+struct jtm *jgmtime_r(const time_t *timep, struct jtm *result);
 
-extern struct jtm *jlocaltime_r(const time_t *timep, struct jtm *result);
+struct jtm *jlocaltime_r(const time_t *timep, struct jtm *result);
 
-extern int jalali_to_farsi(char *buf, size_t n, int padding, char *pad, int d);
+int jalali_to_farsi(char *buf, size_t n, int padding, char *pad, int d);
 
 #ifdef __cplusplus
 }
