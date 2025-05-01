@@ -116,114 +116,51 @@ const int accumulated_jalali_month_len[] = {0,   31,  62,  93,  124, 155,
 
 extern char *tzname[2];
 
-/*
- * Jalali leap year indication function. The algorithm used here
- * is loosely based on the famous recurring 2820 years length period. This
- * period is then divided into 88 cycles, each following a 29, 33, 33, 33
- * years length pattern with the exception for the last being 37 years long.
- * In every of these 29, 33 or 37 years long periods starting with year 0,
- * leap years are multiples of four except for year 0 in each period.
- * The current 2820 year period started in the year AP 475 (AD 1096).
- */
+// Taken from
+// https://github.com/unicode-org/icu4x/blob/3e3da0a0a34bfe3056d0f89183270ea683f4a23c/utils/calendrical_calculations/src/persian.rs#L23
+// All these years are not leap, while they are considered leap by the 33-year
+// rule. The year following each of them is leap, but it's considered non-leap
+// by the 33-year rule. This table has been tested to match the modified
+// astronomical algorithm based on the 52.5 degrees east meridian from 1178 AP
+// (an arbitrary date before the Persian calendar was adopted in 1304 AP) to
+// 3000 AP (an arbitrary date far into the future).
+//
+// TODO make a generalized algorithmic implementation
+const int non_leap_correction[] = {
+    1502, 1601, 1634, 1667, 1700, 1733, 1766, 1799, 1832, 1865, 1898, 1931,
+    1964, 1997, 2030, 2059, 2063, 2096, 2129, 2158, 2162, 2191, 2195, 2224,
+    2228, 2257, 2261, 2290, 2294, 2323, 2327, 2356, 2360, 2389, 2393, 2422,
+    2426, 2455, 2459, 2488, 2492, 2521, 2525, 2554, 2558, 2587, 2591, 2620,
+    2624, 2653, 2657, 2686, 2690, 2719, 2723, 2748, 2752, 2756, 2781, 2785,
+    2789, 2818, 2822, 2847, 2851, 2855, 2880, 2884, 2888, 2913, 2917, 2921,
+    2946, 2950, 2954, 2979, 2983, 2987,
+};
 
-int jalali_is_jleap(int year) {
-
-  /* Leap years from 1200 to 1299 AP */
-  int leap1200[100] = {
-      [10] = 1, [14] = 1, [18] = 1, [22] = 1, [26] = 1, [30] = 1,
-      [34] = 1, [38] = 1, [43] = 1, [47] = 1, [51] = 1, [55] = 1,
-      [59] = 1, [63] = 1, [67] = 1, [71] = 1, [76] = 1, [80] = 1,
-      [84] = 1, [88] = 1, [92] = 1, [96] = 1};
-
-  /* Leap years from 1300 to 1399 AP */
-  int leap1300[100] = {
-      [0] = 1,  [4] = 1,  [9] = 1,  [13] = 1, [17] = 1, [21] = 1, [25] = 1,
-      [29] = 1, [33] = 1, [37] = 1, [42] = 1, [46] = 1, [50] = 1, [54] = 1,
-      [58] = 1, [62] = 1, [66] = 1, [70] = 1, [75] = 1, [79] = 1, [83] = 1,
-      [87] = 1, [91] = 1, [95] = 1, [99] = 1};
-
-  /* Leap years from 1400 to 1499 AP */
-  int leap1400[100] = {
-      [3] = 1,  [8] = 1,  [12] = 1, [16] = 1, [20] = 1, [24] = 1,
-      [28] = 1, [32] = 1, [36] = 1, [41] = 1, [45] = 1, [49] = 1,
-      [53] = 1, [57] = 1, [61] = 1, [65] = 1, [69] = 1, [74] = 1,
-      [78] = 1, [82] = 1, [86] = 1, [90] = 1, [94] = 1};
-
-  int i = year % 100;
-
-  if (year >= 1200 && year <= 1299) {
-    if (leap1200[i] == 1)
+int is_non_leap_correction(int p_year) {
+  const int len = sizeof(non_leap_correction) / sizeof(non_leap_correction[0]);
+  for (int i = 0; i < len; i++) {
+    if (p_year == non_leap_correction[i]) {
       return 1;
-    else
-      return 0;
-  } else if (year >= 1300 && year <= 1399) {
-    if (leap1300[i] == 1)
-      return 1;
-    else
-      return 0;
-  } else if (year >= 1400 && year <= 1499) {
-    if (leap1400[i] == 1)
-      return 1;
-    else
-      return 0;
-  }
-
-  /* Keeping the old algorithm as fallback */
-
-  int pr = year;
-
-  /* Shifting ``year'' with 2820 year period epoch. */
-  pr -= JALALI_LEAP_BASE;
-
-  pr %= JALALI_LEAP_PERIOD;
-
-  /*
-   * According to C99 standards, modulo operator's result has the same sign
-   * as dividend. Since what we require to process has to be in range
-   * 0-2819, we have to shift the remainder to be positive if dividend is
-   * negative.
-   */
-  if (pr < 0) {
-    pr += JALALI_LEAP_PERIOD;
-  }
-
-  /*
-   * Every cycle consists of one 29 year period and three identical 33 year
-   * periods forming a 128 years length cycle. An exception applies to the
-   * last cycle being 132 years instead and it's last 33 years long partition
-   * will be extended for an extra 4 years thus becoming 37 years long.
-   * JALALI_LAST_CYCLE_START literally marks the beginning of this last
-   * cycle.
-   */
-
-  pr = (pr > JALALI_LAST_CYCLE_START) ? (pr - JALALI_LAST_CYCLE_START)
-                                      : pr % JALALI_NORMAL_CYCLE_LENGTH;
-
-  /*
-   * Classifying year in a cycle. Assigning to one of the four partitions.
-   */
-
-  for (i = 0; i < J_LI; i++) {
-    if ((pr >= cycle_patterns[i]) && (pr < cycle_patterns[i + 1])) {
-      pr -= cycle_patterns[i];
-      /* Handling year-0 exception */
-      if (!pr) /* pr is zero */
-        return 0;
-      /*
-       * If year is a multiple of four then it's leap,
-       * ordinary otherwise.
-       */
-      else
-        return !(pr % J_LI);
     }
   }
 
-  /*
-   * Our code flow better not reach this fail-safe
-   * return statement and I really mean it.
-   */
   return 0;
 }
+
+int is_leap_year(int p_year) {
+  if (p_year >= non_leap_correction[0] && is_non_leap_correction(p_year)) {
+    return 0;
+  }
+
+  if (p_year > non_leap_correction[0] && is_non_leap_correction(p_year - 1)) {
+    return 1;
+  }
+
+  int abs = p_year < 0 ? -p_year : p_year;
+  return ((25 * abs + 11) % 33) < 8;
+}
+
+int jalali_is_jleap(int year) { return is_leap_year(year); }
 
 /*
  * Creates absolute values for day, hour, minute and seconds from time_t.
