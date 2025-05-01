@@ -1,11 +1,7 @@
 bin_PROGRAMS = jcal jdate
 
-INCLUDES = -I${top_srcdir} -I${top_srcdir}/libjalali -I@includedir@
-
-AM_CFLAGS = @CFLAGS@ -fno-inline -D_REENTRANT -Wall\
-	-O2 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+AM_CFLAGS = @CFLAGS@ -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64
 
 jcal_SOURCES = jcal.c
 jdate_SOURCES = jdate.c
-LDADD           = ../libjalali/libjalali.la -L@libdir@
-LIBS            = @LIBS@ $(THREAD_LIBS)
+LDADD = ../libjalali/libjalali.la -L@libdir@

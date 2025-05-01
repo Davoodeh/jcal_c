@@ -4,3 +4,6 @@ This project enforces (see [workflows](../.github/workflows/)) the following
 formatters:
 - `clang-format` version 19 for all the C files, source and headers (or any
   protobuf if any, in the future).
+
+The codebase is better compiled and checked with `-Wall`. Ideally, no warning
+should show.
